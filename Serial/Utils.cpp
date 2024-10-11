@@ -5,7 +5,7 @@
 #include <iostream>
 
 
-auto TestSpeed(std::function<void()> const & function, std::string_view const message) noexcept -> void
+auto TestSpeed(std::function<void()> const & function, std::string_view const message) -> void
 {
     using namespace std::chrono;
 

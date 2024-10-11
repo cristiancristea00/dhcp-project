@@ -24,9 +24,9 @@ auto FractalGenerator::pixelToPoint(Pixel const & pixel) const -> Point
 
 auto FractalGenerator::render() -> void
 {
-    for (auto const & row : std::ranges::views::iota(0U, imageSize.first))
+    for (auto const & row : std::views::iota(0U, imageSize.first))
     {
-        for (auto const & col : std::ranges::views::iota(0U, imageSize.second))
+        for (auto const & col : std::views::iota(0U, imageSize.second))
         {
             auto const point = pixelToPoint({col, row});
             image[(row * imageSize.second) + col] = generate(point, maxIterations);
@@ -38,13 +38,15 @@ auto FractalGenerator::render() -> void
 
 auto FractalGenerator::save(std::string_view const & filename) -> void
 {
+    using namespace cv;
+
     if (!isRendered)
     {
         throw std::runtime_error("The fractal has not been rendered yet.");
     }
 
-    cv::Mat const greyImage(imageSize.first, imageSize.second, CV_8UC1, image.data());
-    cv::Mat coloredImage;
-    cv::applyColorMap(greyImage, coloredImage, cv::COLORMAP_MAGMA);
-    cv::imwrite(filename.data(), coloredImage);
+    Mat const greyImage(imageSize.first, imageSize.second, CV_8UC1, image.data());
+    Mat coloredImage;
+    applyColorMap(greyImage, coloredImage, COLORMAP_MAGMA);
+    imwrite(filename.data(), coloredImage);
 }
