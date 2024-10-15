@@ -28,8 +28,7 @@ auto FractalGenerator::render() -> void
     {
         for (auto const & col : std::views::iota(0U, imageSize.second))
         {
-            auto const point{pixelToPoint({col, row})};
-            image[(row * imageSize.second) + col] = generate(point, maxIterations);
+            image[(row * imageSize.second) + col] = generate(pixelToPoint({col, row}), maxIterations);
         }
     }
 
