@@ -13,11 +13,11 @@ FractalGenerator::FractalGenerator(Size const & imageSize, Point const & topLeft
 
 auto FractalGenerator::pixelToPoint(Pixel const & pixel) const -> Point
 {
-    auto const width = bottomRight.real() - topLeft.real();
-    auto const height = topLeft.imag() - bottomRight.imag();
+    auto const width{bottomRight.real() - topLeft.real()};
+    auto const height{topLeft.imag() - bottomRight.imag()};
 
-    auto const row = topLeft.real() + pixel.first * width / imageSize.second;
-    auto const col = topLeft.imag() - pixel.second * height / imageSize.first;
+    auto const row{topLeft.real() + (static_cast<decltype(width)>(pixel.first) * width / static_cast<decltype(width)>(imageSize.second))};
+    auto const col{topLeft.imag() - (static_cast<decltype(height)>(pixel.second) * height / static_cast<decltype(height)>(imageSize.first))};
 
     return {row, col};
 }
@@ -28,7 +28,7 @@ auto FractalGenerator::render() -> void
     {
         for (auto const & col : std::views::iota(0U, imageSize.second))
         {
-            auto const point = pixelToPoint({col, row});
+            auto const point{pixelToPoint({col, row})};
             image[(row * imageSize.second) + col] = generate(point, maxIterations);
         }
     }
@@ -45,7 +45,7 @@ auto FractalGenerator::save(std::string_view const & filename) -> void
         throw std::runtime_error("The fractal has not been rendered yet.");
     }
 
-    Mat const greyImage(imageSize.first, imageSize.second, CV_8UC1, image.data());
+    Mat const greyImage(static_cast<int>(imageSize.first), static_cast<int>(imageSize.second), CV_8UC1, image.data());
     Mat coloredImage;
     applyColorMap(greyImage, coloredImage, COLORMAP_MAGMA);
     imwrite(filename.data(), coloredImage);

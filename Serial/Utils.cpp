@@ -18,4 +18,3 @@ auto TestSpeed(std::function<void()> const & function, std::string_view const me
 
     std::cout << std::format("Time taken for {} : {} ms\n", message, timeMs);
 }
-

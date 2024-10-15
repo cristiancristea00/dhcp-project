@@ -5,7 +5,7 @@ MandelbrotGenerator::MandelbrotGenerator(Size const & imageSize, std::size_t con
 
 auto MandelbrotGenerator::generate(Point const & startPoint, std::size_t const maxIterations) const -> std::uint8_t
 {
-    static constexpr double MAX_NORM = 4.0;
+    static constexpr double MAX_NORM{4.0};
 
     Point point{0.0, 0.0};
 

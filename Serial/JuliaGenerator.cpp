@@ -5,7 +5,7 @@ JuliaGenerator::JuliaGenerator(Size const & imageSize, std::size_t const maxIter
 
 auto JuliaGenerator::generate(Point const & startPoint, std::size_t const maxIterations) const -> std::uint8_t
 {
-    static constexpr double MAX_NORM = 4.0;
+    static constexpr double MAX_NORM{4.0};
 
     auto point{startPoint};
 

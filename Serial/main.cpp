@@ -36,12 +36,22 @@ auto main(int const argc, char * argv[]) -> int
 
     MandelbrotGenerator mandelbrotGenerator{imageSize, maxIterations};
     std::cout << "Rendering Mandelbrot set...\n";
-    TestSpeed([&mandelbrotGenerator]() -> void { mandelbrotGenerator.render(); }, "Mandelbrot set");
+    TestSpeed(
+        [&mandelbrotGenerator]() -> void
+        {
+            mandelbrotGenerator.render();
+        }, "Mandelbrot set"
+    );
     mandelbrotGenerator.save("mandelbrot.png");
 
     std::cout << "Rendering Julia set...\n";
     JuliaGenerator juliaGenerator{imageSize, maxIterations};
-    TestSpeed([&juliaGenerator]() -> void { juliaGenerator.render(); }, "Julia set");
+    TestSpeed(
+        [&juliaGenerator]() -> void
+        {
+            juliaGenerator.render();
+        }, "Julia set"
+    );
     juliaGenerator.save("julia.png");
 
     return EXIT_SUCCESS;
