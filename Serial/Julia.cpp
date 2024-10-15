@@ -1,20 +1,8 @@
 #include <format>
 #include <iostream>
 
+#include "Utils.hpp"
 #include "JuliaGenerator.hpp"
-#include "MandelbrotGenerator.hpp"
-
-
-#define ARGS_COUNT    ( 4 )
-
-
-enum Arguments : std::uint8_t
-{
-    NAME           = 0x00,
-    WIDTH          = 0x01,
-    HEIGHT         = 0x02,
-    MAX_ITERATIONS = 0x03,
-};
 
 
 auto main(int const argc, char * argv[]) -> int
@@ -32,17 +20,7 @@ auto main(int const argc, char * argv[]) -> int
 
     std::size_t const maxIterations{std::stoul(argv[MAX_ITERATIONS])};
 
-    std::cout << std::format("Generating fractals images with size {}x{} using {} iterations\n", imageWidth, imageHeight, maxIterations);
-
-    MandelbrotGenerator mandelbrotGenerator{imageSize, maxIterations};
-    std::cout << "Rendering Mandelbrot set...\n";
-    TestSpeed(
-        [&mandelbrotGenerator]() -> void
-        {
-            mandelbrotGenerator.render();
-        }, "Mandelbrot set"
-    );
-    mandelbrotGenerator.save("mandelbrot.png");
+    std::cout << std::format("Generating fractal image with size {}x{} using {} iterations\n", imageWidth, imageHeight, maxIterations);
 
     std::cout << "Rendering Julia set...\n";
     JuliaGenerator juliaGenerator{imageSize, maxIterations};
