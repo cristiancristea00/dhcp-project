@@ -3,10 +3,10 @@
 #include "FractalGenerator.hpp"
 
 
-class CosinusGenerator final : public FractalGenerator
+class CosineGenerator final : public FractalGenerator
 {
 public:
-    CosinusGenerator(Size const & imageSize, std::size_t const maxIterations);
+    CosineGenerator(Size const & imageSize, std::size_t const maxIterations);
 
 private:
     [[nodiscard]] auto generate(Point const & startPoint, std::size_t const maxIterations) const -> std::uint8_t override;

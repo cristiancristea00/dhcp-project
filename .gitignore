@@ -4,3 +4,4 @@
 **/.vs/
 **/.idea/
 **/CMakeSettings.json
+output/

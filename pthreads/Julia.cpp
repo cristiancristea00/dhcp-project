@@ -20,7 +20,7 @@ auto main(int const argc, char * argv[]) -> int
 
     std::size_t const maxIterations{std::stoul(argv[MAX_ITERATIONS])};
 
-    std::cout << std::format("Generating fractal image with size {}x{} using {} iterations\n", imageWidth, imageHeight, maxIterations);
+    std::cout << std::format("Generating fractal image with size {}×{} using {} iterations\n", imageWidth, imageHeight, maxIterations);
 
     std::cout << "Rendering Julia set...\n";
     JuliaGenerator juliaGenerator{imageSize, maxIterations};
@@ -30,7 +30,7 @@ auto main(int const argc, char * argv[]) -> int
             juliaGenerator.render();
         }, "Julia set"
     );
-    juliaGenerator.save("julia.png");
+    juliaGenerator.save("Julia.png");
 
     return EXIT_SUCCESS;
 }

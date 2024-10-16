@@ -20,7 +20,7 @@ auto main(int const argc, char * argv[]) -> int
 
     std::size_t const maxIterations{std::stoul(argv[MAX_ITERATIONS])};
 
-    std::cout << std::format("Generating fractal image with size {}x{} using {} iterations\n", imageWidth, imageHeight, maxIterations);
+    std::cout << std::format("Generating fractal image with size {}×{} using {} iterations\n", imageWidth, imageHeight, maxIterations);
 
     std::cout << "Rendering Tricorn set...\n";
     TricornGenerator tricornGenerator{imageSize, maxIterations};
@@ -30,7 +30,7 @@ auto main(int const argc, char * argv[]) -> int
             tricornGenerator.render();
         }, "Tricorn set"
     );
-    tricornGenerator.save("tricorn.png");
+    tricornGenerator.save("Tricorn.png");
 
     return EXIT_SUCCESS;
 }

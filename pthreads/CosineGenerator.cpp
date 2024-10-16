@@ -1,9 +1,9 @@
-#include "CosinusGenerator.hpp"
+#include "CosineGenerator.hpp"
 
 
-CosinusGenerator::CosinusGenerator(Size const & imageSize, std::size_t const maxIterations) : FractalGenerator{imageSize, topLeft, bottomRight, maxIterations} { }
+CosineGenerator::CosineGenerator(Size const & imageSize, std::size_t const maxIterations) : FractalGenerator{imageSize, topLeft, bottomRight, maxIterations} { }
 
-auto CosinusGenerator::generate(Point const & startPoint, std::size_t const maxIterations) const -> std::uint8_t
+auto CosineGenerator::generate(Point const & startPoint, std::size_t const maxIterations) const -> std::uint8_t
 {
     Point point{0.0, 0.0};
 
@@ -20,7 +20,7 @@ auto CosinusGenerator::generate(Point const & startPoint, std::size_t const maxI
     return 0;
 }
 
-constexpr auto CosinusGenerator::getRadius() const -> double
+constexpr auto CosineGenerator::getRadius() const -> double
 {
     return 10.0 * std::numbers::pi;
 }

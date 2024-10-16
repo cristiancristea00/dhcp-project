@@ -21,5 +21,5 @@ set(SOURCE_FILES Utils.cpp FractalGenerator.cpp)
 
 add_executable(Mandelbrot Mandelbrot.cpp MandelbrotGenerator.cpp ${SOURCE_FILES})
 add_executable(Julia Julia.cpp JuliaGenerator.cpp ${SOURCE_FILES})
-add_executable(Cosinus Cosinus.cpp CosinusGenerator.cpp ${SOURCE_FILES})
+add_executable(Cosine Cosine.cpp CosineGenerator.cpp ${SOURCE_FILES})
 add_executable(Tricorn Tricorn.cpp TricornGenerator.cpp ${SOURCE_FILES})

@@ -2,7 +2,7 @@
 #include <iostream>
 
 #include "Utils.hpp"
-#include "CosinusGenerator.hpp"
+#include "CosineGenerator.hpp"
 
 
 auto main(int const argc, char * argv[]) -> int
@@ -20,17 +20,17 @@ auto main(int const argc, char * argv[]) -> int
 
     std::size_t const maxIterations{std::stoul(argv[MAX_ITERATIONS])};
 
-    std::cout << std::format("Generating fractal image with size {}x{} using {} iterations\n", imageWidth, imageHeight, maxIterations);
+    std::cout << std::format("Generating fractal image with size {}×{} using {} iterations\n", imageWidth, imageHeight, maxIterations);
 
-    std::cout << "Rendering Cosinus set...\n";
-    CosinusGenerator cosinusGenerator{imageSize, maxIterations};
+    std::cout << "Rendering Cosine set...\n";
+    CosineGenerator cosineGenerator{imageSize, maxIterations};
     TestSpeed(
-        [&cosinusGenerator]() -> void
+        [&cosineGenerator]() -> void
         {
-            cosinusGenerator.render();
-        }, "Cosinus set"
+            cosineGenerator.render();
+        }, "Cosine set"
     );
-    cosinusGenerator.save("cosinus.png");
+    cosineGenerator.save("Cosine.png");
 
     return EXIT_SUCCESS;
 }
