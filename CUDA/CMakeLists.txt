@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.19)
-project("Serial Fractal Generator" LANGUAGES CXX)
+project("Parallel Fractal Generator using CUDA" LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 
