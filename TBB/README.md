@@ -2,7 +2,7 @@
 
 ## Initial Code Profiling
 
-Running times:
+Running times (in milliseconds) on 5000×3000 images for 1000 iterations:
 
 - _Mandelbrot:_ 12 753 ms
 - _Julia:_ 3 961 ms
@@ -56,3 +56,17 @@ Running times:
 #### Top Hotspots
 
 ![Cosine Top Hotspots](img/profile/profile-serial-cosine-top.png)
+
+### Small optimisations
+
+After analysing the above hotspots, I made the following small optimisations:
+
+- I used a constant for the escape radius instread of getting it from a virtual function.
+- I used the `std::abs` function instead of the `std::norm` function to check the magnitude of a complex number. It seems that the `std::norm` function is slower than the `std::abs` function.
+
+Running times (in milliseconds) on 5000×3000 images for 1000 iterations:
+
+- _Mandelbrot:_ 6 900 ms
+- _Julia:_ 2 148 ms
+- _Tricorn:_ 2 157 ms
+- _Cosine:_ 301 380 ms

@@ -11,8 +11,8 @@ public:
 private:
     [[nodiscard]] auto generate(Point const & startPoint, std::size_t const maxIterations) const -> std::uint8_t override;
 
-    [[nodiscard]] constexpr auto getRadius() const -> double override;
+    static constexpr Point TOP_LEFT{-2.0, 1.6};
+    static constexpr Point BOTTOM_RIGHT{2.0, -1.6};
 
-    static constexpr Point topLeft{-2.0, 1.6};
-    static constexpr Point bottomRight{2.0, -1.6};
+    static constexpr double RADIUS{2.0};
 };

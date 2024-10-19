@@ -49,9 +49,3 @@ auto FractalGenerator::save(std::string_view const & filename) -> void
     applyColorMap(greyImage, coloredImage, COLORMAP_MAGMA);
     imwrite(filename.data(), coloredImage);
 }
-
-auto FractalGenerator::getMaxNorm() const -> double
-{
-    auto const radius{getRadius()};
-    return radius * radius;
-}
