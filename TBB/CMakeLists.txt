@@ -13,6 +13,9 @@ else()
     set(CMAKE_CXX_FLAGS_DEBUG "-Og -march=native -pipe -fno-builtin -g -fsanitize=address,leak,undefined")
 endif()
 
+find_package(TBB REQUIRED)
+link_libraries(TBB::tbb)
+
 find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 link_libraries(${OpenCV_LIBS})

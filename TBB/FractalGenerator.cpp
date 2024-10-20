@@ -2,6 +2,7 @@
 
 #include <ranges>
 
+#include <oneapi/tbb.h>
 #include <opencv2/opencv.hpp>
 
 
@@ -24,13 +25,24 @@ auto FractalGenerator::pixelToPoint(Pixel const & pixel) const -> Point
 
 auto FractalGenerator::render() -> void
 {
-    for (auto const & row : std::views::iota(0U, imageSize.first))
-    {
-        for (auto const & col : std::views::iota(0U, imageSize.second))
+    using namespace oneapi::tbb;
+
+    auto const range2d{blocked_range2d<std::size_t>{0U, imageSize.first, 0U, imageSize.second}};
+
+    auto const process{
+        [this](auto const & range) -> void
         {
-            image[(row * imageSize.second) + col] = generate(pixelToPoint({col, row}), maxIterations);
+            for (auto row{range.rows().begin()}; row < range.rows().end(); ++row)
+            {
+                for (auto col{range.cols().begin()}; col < range.cols().end(); ++col)
+                {
+                    image[(row * imageSize.second) + col] = generate(pixelToPoint({col, row}), maxIterations);
+                }
+            }
         }
-    }
+    };
+
+    parallel_for(range2d, process);
 
     isRendered = true;
 }
