@@ -2,7 +2,6 @@
 
 #include <ranges>
 
-#include <oneapi/tbb.h>
 #include <opencv2/opencv.hpp>
 
 
@@ -27,6 +26,8 @@ auto FractalGenerator::render() -> void
 {
     using namespace oneapi::tbb;
 
+    static affinity_partitioner affinityPartitioner;
+
     auto const range2d{blocked_range2d<std::size_t>{0U, imageSize.first, 0U, imageSize.second}};
 
     auto const process{
@@ -42,7 +43,7 @@ auto FractalGenerator::render() -> void
         }
     };
 
-    parallel_for(range2d, process);
+    parallel_for(range2d, process, affinityPartitioner);
 
     isRendered = true;
 }

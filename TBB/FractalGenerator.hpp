@@ -4,6 +4,8 @@
 #include <string_view>
 #include <vector>
 
+#include <oneapi/tbb.h>
+
 #include "Utils.hpp"
 
 
@@ -32,7 +34,7 @@ protected:
 
     std::size_t const maxIterations;
 
-    std::vector<std::uint8_t> image;
+    std::vector<std::uint8_t, oneapi::tbb::cache_aligned_allocator<std::uint8_t>> image;
 
     static constexpr std::size_t MAX_COLOR{255};
 };
