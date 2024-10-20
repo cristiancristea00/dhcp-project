@@ -22,6 +22,10 @@ function build
     cd $type
     cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -B build
     cd build && ninja
+    if [ $? -ne 0 ]; then
+        echo "Error building $type"
+        exit 2
+    fi
     cd ../..
 }
 
