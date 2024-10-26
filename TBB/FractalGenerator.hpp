@@ -21,7 +21,7 @@ public:
     auto save(std::string_view const & filename) -> void;
 
 protected:
-    virtual auto generate(Point const & startPoint, std::size_t const maxIterations) const -> std::uint8_t = 0;
+    virtual auto generate(Point const & startPoint) const -> std::uint8_t = 0;
 
     [[gnu::always_inline]] inline auto pixelToPoint(Pixel const & pixel) const -> Point;
 
