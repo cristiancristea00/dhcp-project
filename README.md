@@ -43,3 +43,21 @@ sudo apt-get install libopencv-dev
     ```bash
     bash run.sh
     ```
+
+## Examples
+
+### Mandelbrot
+
+![Mandelbrot](img/TBB-Mandelbrot-8000×6000-5000.png)
+
+### Julia
+
+![Julia](img/TBB-Julia-8000×6000-5000.png)
+
+### Tricorn
+
+![Tricorn](img/TBB-Tricorn-8000×6000-5000.png)
+
+### Cosine
+
+![Cosine](img/TBB-Cosine-8000×6000-5000.png)
