@@ -71,6 +71,12 @@ Running times (in milliseconds) on 5000×3000 images for 1000 iterations:
 - _Tricorn:_ 2 157 ms
 - _Cosine:_ 301 380 ms
 
+## TBB Research
+
+- I installed the `TBB` library on my machine along with the `GCC`, `Clang`, and `Intel` compilers.
+- I have looked over the `TBB` [documentation](https://www.intel.com/content/www/us/en/docs/onetbb/developer-guide-api-reference/2022-0/overview.html) and some [examples and tutorials](https://oneapi-src.github.io/oneTBB/index.html).
+- I have implemented a [QuisckSort](../TBB-QuickSort) algorithm using `TBB` and compared it with the Standard Template Library (STL) implementation.
+
 ## Initial TBB Implementation
 
 Running times (in milliseconds) on 5000×3000 images for 1000 iterations:
