@@ -20,10 +20,9 @@ auto main(int const argc, char * argv[]) -> int
 
     std::size_t const maxIterations{std::stoul(argv[MAX_ITERATIONS])};
 
-    std::cout << std::format("Generating fractal image with size {}×{} using {} iterations\n", imageWidth, imageHeight, maxIterations);
+    std::cout << std::format("Generating Mandelbrot fractal image with size {}×{} using {} iterations...\n", imageWidth, imageHeight, maxIterations);
 
     MandelbrotGenerator mandelbrotGenerator{imageSize, maxIterations};
-    std::cout << "Rendering Mandelbrot set...\n";
     TestSpeed(
         [&mandelbrotGenerator]() -> void
         {

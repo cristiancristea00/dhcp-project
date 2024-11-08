@@ -19,7 +19,7 @@ enum Arguments : std::uint8_t
 
 using Pixel = std::pair<std::size_t, std::size_t>;
 using Size = std::pair<std::size_t, std::size_t>;
-using Point = std::complex<double>;
+using Point = std::complex<float>;
 
 
 auto TestSpeed(std::function<void()> const & function, std::string_view const message) -> void;

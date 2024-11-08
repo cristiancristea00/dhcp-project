@@ -13,11 +13,11 @@ FractalGenerator::FractalGenerator(Size const & imageSize, Point const & topLeft
 
 auto FractalGenerator::pixelToPoint(Pixel const & pixel) const -> Point
 {
-    auto const width{bottomRight.real() - topLeft.real()};
-    auto const height{topLeft.imag() - bottomRight.imag()};
+    static auto const WIDTH{bottomRight.real() - topLeft.real()};
+    static auto const HEIGHT{topLeft.imag() - bottomRight.imag()};
 
-    auto const row{topLeft.real() + (static_cast<decltype(width)>(pixel.first) * width / static_cast<decltype(width)>(imageSize.second))};
-    auto const col{topLeft.imag() - (static_cast<decltype(height)>(pixel.second) * height / static_cast<decltype(height)>(imageSize.first))};
+    auto const row{topLeft.real() + (static_cast<decltype(WIDTH)>(pixel.first) * WIDTH / static_cast<decltype(WIDTH)>(imageSize.second))};
+    auto const col{topLeft.imag() - (static_cast<decltype(HEIGHT)>(pixel.second) * HEIGHT / static_cast<decltype(HEIGHT)>(imageSize.first))};
 
     return {row, col};
 }
@@ -28,7 +28,7 @@ auto FractalGenerator::render() -> void
     {
         for (auto const & col : std::views::iota(0U, imageSize.second))
         {
-            image[(row * imageSize.second) + col] = generate(pixelToPoint({col, row}), maxIterations);
+            image[(row * imageSize.second) + col] = generate(pixelToPoint({col, row}));
         }
     }
 
@@ -48,10 +48,4 @@ auto FractalGenerator::save(std::string_view const & filename) -> void
     Mat coloredImage;
     applyColorMap(greyImage, coloredImage, COLORMAP_MAGMA);
     imwrite(filename.data(), coloredImage);
-}
-
-auto FractalGenerator::getMaxNorm() const -> double
-{
-    auto const radius{getRadius()};
-    return radius * radius;
 }

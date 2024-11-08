@@ -19,13 +19,9 @@ public:
     auto save(std::string_view const & filename) -> void;
 
 protected:
-    [[nodiscard]] virtual auto generate(Point const & startPoint, std::size_t const maxIterations) const -> std::uint8_t = 0;
+    virtual auto generate(Point const & startPoint) const -> std::uint8_t = 0;
 
-    [[nodiscard]] auto getMaxNorm() const -> double;
-
-    [[nodiscard]] virtual constexpr auto getRadius() const -> double = 0;
-
-    [[nodiscard]] auto pixelToPoint(Pixel const & pixel) const -> Point;
+    [[gnu::always_inline]] inline auto pixelToPoint(Pixel const & pixel) const -> Point;
 
     bool isRendered{false};
 
