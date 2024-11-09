@@ -9,6 +9,7 @@
 
 ## Implementations
 
+- [Serial](Serial/README.md)
 - [TBB](TBB/README.md)
 - [CUDA](CUDA/README.md)
 - [OpenMP](OpenMP/README.md)
