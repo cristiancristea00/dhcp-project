@@ -22,6 +22,66 @@ auto FractalGenerator::pixelToPoint(Pixel const & pixel) const -> Point
     return {row, col};
 }
 
+/* Row Implementation
+
+auto FractalGenerator::render() -> void
+{
+    using namespace oneapi::tbb;
+
+    static affinity_partitioner affinityPartitioner;
+
+    auto const rowRange{blocked_range<std::size_t>{0U, imageSize.first}};
+
+    auto const process{
+        [this](auto const & range) -> void
+        {
+            for (auto row{range.begin()}; row < range.end(); ++row)
+            {
+                for (auto col{0U}; col < imageSize.second; ++col)
+                {
+                    image[(row * imageSize.second) + col] = generate(pixelToPoint({col, row}));
+                }
+            }
+        }
+    };
+
+    parallel_for(rowRange, process, affinityPartitioner);
+
+    isRendered = true;
+}
+*/
+
+/* Column Implementation
+
+auto FractalGenerator::render() -> void
+{
+    using namespace oneapi::tbb;
+
+    static affinity_partitioner affinityPartitioner;
+
+    auto const colRange{blocked_range<std::size_t>{0U, imageSize.second}};
+
+    auto const process{
+        [this](auto const & range) -> void
+        {
+            for (auto col{range.begin()}; col < range.end(); ++col)
+            {
+                for (auto row{0U}; row < imageSize.first; ++row)
+                {
+                    image[(row * imageSize.second) + col] = generate(pixelToPoint({col, row}));
+                }
+            }
+        }
+    };
+
+    parallel_for(colRange, process, affinityPartitioner);
+
+    isRendered = true;
+}
+*/
+
+/* Block Implementation */
+
 auto FractalGenerator::render() -> void
 {
     using namespace oneapi::tbb;
