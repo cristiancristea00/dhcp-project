@@ -77,8 +77,9 @@ Running times (in milliseconds) on 5000×3000 images for 1000 iterations:
 - I have looked over the `TBB` [documentation](https://www.intel.com/content/www/us/en/docs/onetbb/developer-guide-api-reference/2022-0/overview.html) and some [examples and tutorials](https://oneapi-src.github.io/oneTBB/index.html).
 - I have implemented a [QuisckSort](../TBB-QuickSort) algorithm using `TBB` and compared it with the Standard Template Library (STL) implementation.
 
-## Initial TBB Implementation
+## Analysis
 
+<!-- 
 Running times (in milliseconds) on 5000×3000 images for 1000 iterations:
 
 - _Mandelbrot:_ 849 ms
@@ -130,4 +131,68 @@ Running times (in milliseconds) on 5000×3000 images for 1000 iterations:
 
 #### Worker Utilisation
 
-![Cosine Worker Utilisation](img/profile/profile-tbb-initial-cosine-work.png)
+![Cosine Worker Utilisation](img/profile/profile-tbb-initial-cosine-work.png) 
+-->
+
+Serial running times (in milliseconds) on 5000×3000 images for 1000 iterations (on the PRECIS cluster):
+
+- _Mandelbrot:_ 12 229 ms
+- _Julia:_ 3 877 ms
+- _Tricorn:_ 3 689 ms
+- _Cosine:_ 315 814 ms
+
+### Mandelbrot
+
+| Implementation |     2 |     5 |    10 |   15 |   20 |   25 |   50 |   75 |  100 |  150 |  200 |
+| :------------- | ----: | ----: | ----: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Row            | 5 029 | 2 002 | 1 085 |  739 |  604 |  522 |  302 |  226 |  230 |  183 |  133 |
+| Column         | 5 035 | 1 961 | 1 086 |  752 |  588 |  497 |  309 |  243 |  255 |  174 |  156 |
+| Block          | 4 194 | 1 982 | 1 184 |  732 |  584 |  496 |  385 |  278 |  272 |  189 |  140 |
+
+![Mandelbrot Execution Time](img/graph/Mandelbrot-Time.png)
+
+![Mandelbrot Speedup](img/graph/Mandelbrot-Speedup.png)
+
+![Mandelbrot Efficiency](img/graph/Mandelbrot-Efficiency.png)
+
+### Julia
+
+| Implementation |     2 |    5 |   10 |   15 |   20 |   25 |   50 |   75 |  100 |  150 |  200 |
+| :------------- | ----: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Row            | 1 466 |  728 |  362 |  283 |  230 |  237 |  172 |  185 |  145 |  114 |   56 |
+| Column         | 1 447 |  732 |  368 |  309 |  228 |  205 |  152 |  149 |  159 |  116 |   58 |
+| Block          | 1 285 |  671 |  372 |  276 |  249 |  205 |  157 |  162 |  167 |  121 |  102 |
+
+![Julia Execution Time](img/graph/Julia-Time.png)
+
+![Julia Speedup](img/graph/Julia-Speedup.png)
+
+![Julia Efficiency](img/graph/Julia-Efficiency.png)
+
+### Tricorn
+
+| Implementation |     2 |    5 |   10 |   15 |   20 |   25 |   50 |   75 |  100 |  150 |  200 |
+| :------------- | ----: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Row            | 1 426 |  672 |  359 |  276 |  234 |  209 |  158 |  177 |  151 |  127 |   59 |
+| Column         | 1 461 |  651 |  372 |  290 |  208 |  194 |  149 |  167 |  154 |  103 |   57 |
+| Block          | 1 202 |  638 |  373 |  315 |  248 |  265 |  166 |  165 |  164 |  113 |   76 |
+
+![Tricorn Execution Time](img/graph/Tricorn-Time.png)
+
+![Tricorn Speedup](img/graph/Tricorn-Speedup.png)
+
+![Tricorn Efficiency](img/graph/Tricorn-Efficiency.png)
+
+### Cosine
+
+| Implementation |       2 |      5 |     10 |     15 |     20 |     25 |    50 |    75 |   100 |   150 |   200 |
+| :------------- | ------: | -----: | -----: | -----: | -----: | -----: | ----: | ----: | ----: | ----: | ----: |
+| Row            | 151 464 | 59 594 | 30 885 | 20 471 | 15 497 | 12 508 | 6 915 | 5 267 | 4 572 | 2 928 | 2 395 |
+| Column         | 153 645 | 59 488 | 30 575 | 20 665 | 15 386 | 12 290 | 6 986 | 5 372 | 4 511 | 2 828 | 2 243 |
+| Block          | 133 715 | 58 923 | 29 733 | 20 141 | 15 168 | 12 219 | 6 884 | 5 259 | 4 437 | 2 694 | 2 138 |
+
+![Cosine Execution Time](img/graph/Cosine-Time.png)
+
+![Cosine Speedup](img/graph/Cosine-Speedup.png)
+
+![Cosine Efficiency](img/graph/Cosine-Efficiency.png)
