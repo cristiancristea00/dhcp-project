@@ -1,6 +1,8 @@
 #include <format>
 #include <iostream>
 
+#include <oneapi/tbb.h>
+
 #include "Utils.hpp"
 #include "JuliaGenerator.hpp"
 
@@ -20,7 +22,9 @@ auto main(int const argc, char * argv[]) -> int
 
     std::size_t const maxIterations{std::stoul(argv[MAX_ITERATIONS])};
 
-    std::cout << std::format("Generating Julia fractal image with size {}×{} using {} iterations...\n", imageWidth, imageHeight, maxIterations);
+    auto const numThreads{oneapi::tbb::info::default_concurrency()};
+
+    std::cout << std::format("Generating Julia fractal image with size {}×{} using {} iterations on {} threads...\n", imageWidth, imageHeight, maxIterations, numThreads);
 
     JuliaGenerator juliaGenerator{imageSize, maxIterations};
     TestSpeed(

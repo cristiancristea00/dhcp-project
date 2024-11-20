@@ -79,7 +79,7 @@ Running times (in milliseconds) on 5000×3000 images for 1000 iterations:
 
 ## Analysis
 
-<!-- 
+<!--
 Running times (in milliseconds) on 5000×3000 images for 1000 iterations:
 
 - _Mandelbrot:_ 849 ms
@@ -131,10 +131,10 @@ Running times (in milliseconds) on 5000×3000 images for 1000 iterations:
 
 #### Worker Utilisation
 
-![Cosine Worker Utilisation](img/profile/profile-tbb-initial-cosine-work.png) 
+![Cosine Worker Utilisation](img/profile/profile-tbb-initial-cosine-work.png)
 -->
 
-Serial running times (in milliseconds) on 5000×3000 images for 1000 iterations (on the PRECIS cluster):
+<!-- Serial running times (in milliseconds) on 5000×3000 images for 1000 iterations (on the PRECIS cluster):
 
 - _Mandelbrot:_ 12 229 ms
 - _Julia:_ 3 877 ms
@@ -195,4 +195,52 @@ Serial running times (in milliseconds) on 5000×3000 images for 1000 iterations 
 
 ![Cosine Speedup](img/graph/Cosine-Speedup.png)
 
-![Cosine Efficiency](img/graph/Cosine-Efficiency.png)
+![Cosine Efficiency](img/graph/Cosine-Efficiency.png) -->
+
+### Mandelbrot
+
+|      1 |      2 |     4 |     6 |     8 |    10 |    12 |    14 |    16 |    18 |    20 |    22 |    24 |    26 |    28 |    32 |   36 |   40 |   44 |   48 |   52 |   56 |   60 |   64 |   80 |   96 |  112 |  128 |  144 |  160 |  176 |  192 |  208 |
+| -----: | -----: | ----: | ----: | ----: | ----: | ----: | ----: | ----: | ----: | ----: | ----: | ----: | ----: | ----: | ----: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 25 843 | 15 529 | 7 932 | 5 248 | 4 050 | 3 183 | 2 676 | 2 349 | 2 020 | 1 835 | 1 671 | 1 518 | 1 359 | 1 284 | 1 225 | 1 102 |  952 |  884 |  836 |  789 |  773 |  719 |  682 |  694 |  569 |  512 |  491 |  384 |  367 |  341 |  319 |  283 |  243 |
+
+![Mandelbrot Execution Time](img/graph/Mandelbrot-Time-Block.png)
+
+![Mandelbrot Speedup](img/graph/Mandelbrot-Speedup-Block.png)
+
+![Mandelbrot Efficiency](img/graph/Mandelbrot-Efficiency-Block.png)
+
+### Julia
+
+|     1 |     2 |     4 |    6 |    8 |   10 |   12 |   14 |   16 |   18 |   20 |   22 |   24 |   26 |   28 |   32 |   36 |   40 |   44 |   48 |   52 |   56 |   60 |   64 |   80 |   96 |  112 |  128 |  144 |  160 |  176 |  192 |  208 |
+| ----: | ----: | ----: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 3 988 | 2 324 | 1 216 |  848 |  648 |  541 |  477 |  414 |  370 |  362 |  330 |  324 |  287 |  272 |  267 |  254 |  234 |  229 |  226 |  223 |  221 |  219 |  212 |  210 |  204 |  180 |  175 |  168 |  147 |  123 |  117 |  113 |   90 |
+
+![Julia Execution Time](img/graph/Julia-Time-Block.png)
+
+![Julia Speedup](img/graph/Julia-Speedup-Block.png)
+
+![Julia Efficiency](img/graph/Julia-Efficiency-Block.png)
+
+### Tricorn
+
+|     1 |     2 |     4 |     6 |     8 |   10 |   12 |   14 |   16 |   18 |   20 |   22 |   24 |   26 |   28 |   32 |   36 |   40 |   44 |   48 |   52 |   56 |   60 |   64 |   80 |   96 |  112 |  128 |  144 |  160 |  176 |  192 |  208 |
+| ----: | ----: | ----: | ----: | ----: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 6 571 | 4 128 | 2 235 | 1 418 | 1 095 |  922 |  780 |  668 |  603 |  579 |  553 |  493 |  480 |  439 |  418 |  359 |  336 |  325 |  313 |  305 |  302 |  291 |  280 |  271 |  259 |  242 |  224 |  237 |  189 |  160 |  150 |  145 |  131 |
+
+![Tricorn Execution Time](img/graph/Tricorn-Time-Block.png)
+
+![Tricorn Speedup](img/graph/Tricorn-Speedup-Block.png)
+
+![Tricorn Efficiency](img/graph/Tricorn-Efficiency-Block.png)
+
+### Cosine
+
+|       1 |       2 |       4 |       6 |       8 |     10 |     12 |     14 |     16 |     18 |     20 |     22 |     24 |     26 |     28 |     32 |     36 |     40 |     44 |     48 |     52 |     56 |     60 |     64 |     80 |     96 |    112 |    128 |   144 |   160 |   176 |   192 |   208 |
+| ------: | ------: | ------: | ------: | ------: | -----: | -----: | -----: | -----: | -----: | -----: | -----: | -----: | -----: | -----: | -----: | -----: | -----: | -----: | -----: | -----: | -----: | -----: | -----: | -----: | -----: | -----: | -----: | ----: | ----: | ----: | ----: | ----: |
+| 843 808 | 480 895 | 240 900 | 161 441 | 120 677 | 96 542 | 80 538 | 68 821 | 60 244 | 53 606 | 48 301 | 43 829 | 40 515 | 37 890 | 34 535 | 30 192 | 26 875 | 25 582 | 22 820 | 21 043 | 20 602 | 19 685 | 19 064 | 18 151 | 15 645 | 14 023 | 13 093 | 10 856 | 9 006 | 8 089 | 7 529 | 6 939 | 6 371 |
+
+![Cosine Execution Time](img/graph/Cosine-Time-Block.png)
+
+![Cosine Speedup](img/graph/Cosine-Speedup-Block.png)
+
+![Cosine Efficiency](img/graph/Cosine-Efficiency-Block.png)
