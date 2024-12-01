@@ -16,7 +16,7 @@ public:
 
     virtual ~FractalGenerator() = default;
 
-    auto render() -> void;
+    auto render(Size const & grainsize) -> void;
 
     auto save(std::string_view const & filename) -> void;
 

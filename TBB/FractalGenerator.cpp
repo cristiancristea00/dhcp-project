@@ -30,7 +30,7 @@ auto FractalGenerator::render() -> void
 
     static affinity_partitioner affinityPartitioner;
 
-    auto const rowRange{blocked_range<std::size_t>{0U, imageSize.first}};
+    auto const rowRange{blocked_range<std::size_t>{0U, imageSize.first, GRAINSIZE_ROW}};
 
     auto const process{
         [this](auto const & range) -> void
@@ -59,7 +59,7 @@ auto FractalGenerator::render() -> void
 
     static affinity_partitioner affinityPartitioner;
 
-    auto const colRange{blocked_range<std::size_t>{0U, imageSize.second}};
+    auto const colRange{blocked_range<std::size_t>{0U, imageSize.second, GRAINSIZE_COL}};
 
     auto const process{
         [this](auto const & range) -> void
@@ -82,13 +82,13 @@ auto FractalGenerator::render() -> void
 
 /* Block Implementation */
 
-auto FractalGenerator::render() -> void
+auto FractalGenerator::render(Size const & grainsize) -> void
 {
     using namespace oneapi::tbb;
 
     static affinity_partitioner affinityPartitioner;
 
-    auto const range2d{blocked_range2d<std::size_t>{0U, imageSize.first, 0U, imageSize.second}};
+    auto const range2d{blocked_range2d<std::size_t>{0U, imageSize.first, grainsize.first, 0U, imageSize.second, grainsize.second}};
 
     auto const process{
         [this](auto const & range) -> void

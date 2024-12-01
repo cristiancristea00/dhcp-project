@@ -1,12 +1,14 @@
 #!/bin/bash
 
 
-HELP="Usage: $0 {Serial|TBB|CUDA|OpenMP|pthreads|all} {width} {height} {iterations}"
+HELP=$'Usage: $0 {Serial|TBB|CUDA|OpenMP|pthreads|all} {width} {height} {iterations} [grainsize row] [grainsize column]\n\nThe grainsize optional settings are only available for TBB'
 
 TYPE=$1
 WIDTH=$2
 HEIGHT=$3
 ITERATIONS=$4
+GRAINSIZE_ROW=$5
+GRAINSIZE_COLUMN=$6
 
 TYPES=(Serial TBB CUDA OpenMP pthreads)
 
@@ -38,7 +40,7 @@ function run
     cd $type/build
 
     for fractal in ${FRACTALS[@]}; do
-        ./$fractal $WIDTH $HEIGHT $ITERATIONS
+        ./$fractal $WIDTH $HEIGHT $ITERATIONS $GRAINSIZE_ROW $GRAINSIZE_COLUMN
     done
 
     cd ../..
@@ -59,8 +61,8 @@ function move
 mkdir output 2> /dev/null
 
 # Check if the number of arguments is correct
-if [ $# -ne 4 ]; then
-    echo $HELP
+if [[ $# -ne 4 && $# -ne 6 ]]; then
+    echo "$HELP"
     exit 1
 fi
 
@@ -99,7 +101,7 @@ case $TYPE in
         done
         ;;
     *)
-        echo $HELP
+        echo "$HELP"
         exit 1
         ;;
 esac
