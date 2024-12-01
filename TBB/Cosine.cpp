@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include <oneapi/tbb.h>
+#include <valgrind/callgrind.h>
 
 #include "Utils.hpp"
 #include "CosineGenerator.hpp"
@@ -30,7 +31,12 @@ auto main(int const argc, char * argv[]) -> int
     TestSpeed(
         [&cosineGenerator]() -> void
         {
+            CALLGRIND_ZERO_STATS;
+            CALLGRIND_START_INSTRUMENTATION;
+
             cosineGenerator.render();
+
+            CALLGRIND_STOP_INSTRUMENTATION;
         }, "Cosine set"
     );
     cosineGenerator.save("Cosine.png");

@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include <oneapi/tbb.h>
+#include <valgrind/callgrind.h>
 
 #include "Utils.hpp"
 #include "MandelbrotGenerator.hpp"
@@ -30,7 +31,12 @@ auto main(int const argc, char * argv[]) -> int
     TestSpeed(
         [&mandelbrotGenerator]() -> void
         {
+            CALLGRIND_ZERO_STATS;
+            CALLGRIND_START_INSTRUMENTATION;
+
             mandelbrotGenerator.render();
+
+            CALLGRIND_STOP_INSTRUMENTATION;
         }, "Mandelbrot set"
     );
     mandelbrotGenerator.save("Mandelbrot.png");

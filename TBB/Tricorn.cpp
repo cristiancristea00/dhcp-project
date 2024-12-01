@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include <oneapi/tbb.h>
+#include <valgrind/callgrind.h>
 
 #include "Utils.hpp"
 #include "TricornGenerator.hpp"
@@ -30,7 +31,12 @@ auto main(int const argc, char * argv[]) -> int
     TestSpeed(
         [&tricornGenerator]() -> void
         {
+            CALLGRIND_ZERO_STATS;
+            CALLGRIND_START_INSTRUMENTATION;
+
             tricornGenerator.render();
+
+            CALLGRIND_STOP_INSTRUMENTATION;
         }, "Tricorn set"
     );
     tricornGenerator.save("Tricorn.png");
