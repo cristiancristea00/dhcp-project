@@ -5,7 +5,8 @@
 #include <functional>
 
 
-#define ARGS_COUNT    ( 4U )
+#define ARGS_COUNT             ( 4U )
+#define ARGS_COUNT_WITH_OPT    ( 6U )
 
 
 enum Arguments : std::uint8_t
@@ -14,6 +15,8 @@ enum Arguments : std::uint8_t
     WIDTH          = 0x01,
     HEIGHT         = 0x02,
     MAX_ITERATIONS = 0x03,
+    GRAINSIZE_ROW  = 0x04,
+    GRAINSIZE_COL  = 0x05,
 };
 
 
