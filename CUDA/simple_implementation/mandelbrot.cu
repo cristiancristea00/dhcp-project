@@ -88,6 +88,11 @@ __global__ void generateMandelbrotKernel(uint8_t *image, ImageSize size, float x
 // Function to generate the Mandelbrot fractal on the GPU and save the result as an image
 void generateFractal(ImageSize size, uint32_t max_iterations)
 {
+   // Declare and create CUDA events to measure GPU execution time
+   cudaEvent_t start, stop;
+   cudaEventCreate(&start);
+   cudaEventCreate(&stop);
+   
    uint8_t *d_image;                                         // Pointer to image data in device memory (GPU)
    uint8_t *h_image = new uint8_t[size.width * size.height]; // Pointer to image data in host   memory (CPU)
    
@@ -110,6 +115,16 @@ void generateFractal(ImageSize size, uint32_t max_iterations)
       (size.height + blockSize.y - 1) / blockSize.y  // Total blocks needed along the image height
    );
    
+   std::cout << "Total threads per block = 8×8 = 64 threads\n";
+   std::cout << "Each thread is responsible for computing one pixel of the image, meaning each block processes a 64 pixel region in parallel.\n\n";
+   std::cout << "The grid is a 2D arrangement of blocks, and its size is calculated to cover the entire image.\n";
+   std::cout << "The number of blocks required for the width and height of the image is computed as follows:\n";
+   std::cout << "Total blocks needed along the image width:  " << (size.width  + blockSize.x - 1) / blockSize.x << std::endl;
+   std::cout << "Total blocks needed along the image height: " << (size.height + blockSize.y - 1) / blockSize.y << std::endl << std::endl;
+   
+   // Record the start time for GPU execution using cudaEvent
+   cudaEventRecord(start);
+   
    // Step 4: Launch the CUDA kernel
    // The generateMandelbrotKernel function is executed in parallel across all threads in the grid
    // Each thread computes the Mandelbrot set for one pixel in the image
@@ -119,6 +134,18 @@ void generateFractal(ImageSize size, uint32_t max_iterations)
    // Ensures that all threads finish their computation before moving to the next step
    // Without this, the program may proceed prematurely, potentially causing incorrect or incomplete results
    cudaDeviceSynchronize();
+   
+   // Record the stop time for GPU execution using cudaEvent
+   cudaEventRecord(stop);
+   // Synchronize to ensure all GPU operations are complete before measuring time
+   cudaEventSynchronize(stop);
+   
+   float elapsed_cuda = 0;
+   cudaEventElapsedTime(&elapsed_cuda, start, stop);
+   std::cout << "Execution time using cudaEvent:   " << elapsed_cuda << " ms" << std::endl;
+   
+   cudaEventDestroy(start);
+   cudaEventDestroy(stop);
    
    // Check for any errors that occurred during the kernel execution
    cudaError_t err = cudaGetLastError();
@@ -146,8 +173,27 @@ void generateFractal(ImageSize size, uint32_t max_iterations)
 }
 
 
+//*****************************************************************************
+// a) cudaEvent
+//    Measures the actual execution time of the kernel on the GPU.
+//    It excludes data transfer times between the CPU (host) and GPU (device)
+//    as well as other initialization operations.
+//    It is precise because it directly synchronizes with the GPU.
+//
+// b) std::chrono
+//    Measures the total execution time, including:
+//    - Kernel launch (which is typically asynchronous).
+//    - Data transfer times between the CPU and GPU.
+//    - Any other operations running on the CPU, such as CUDA API calls.
+//    - Possible delays caused by synchronization between the CPU and GPU
+//    (e.g., cudaDeviceSynchronize() waits for all GPU operations to complete).
+//*****************************************************************************
+
+
 int main(int argc, char *argv[])
 {
+   auto start_chrono = std::chrono::high_resolution_clock::now();
+   
    // Check if the correct number of arguments is passed to the program
    if(argc != 4)
    {
@@ -165,6 +211,11 @@ int main(int argc, char *argv[])
    
    // Call the function to generate the Mandelbrot fractal on the GPU and save the result as an image
    generateFractal(size, max_iterations);
+   
+   auto stop_chrono = std::chrono::high_resolution_clock::now();
+   
+   std::chrono::duration<double, std::milli> elapsed_chrono = stop_chrono - start_chrono;
+   std::cout << "Execution time using std::chrono: " << elapsed_chrono.count() << " ms" << std::endl;
    
    return EXIT_SUCCESS;
 }
