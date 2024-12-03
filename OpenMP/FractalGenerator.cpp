@@ -24,7 +24,7 @@ auto FractalGenerator::pixelToPoint(Pixel const & pixel) const -> Point
 
 auto FractalGenerator::render() -> void
 {
-    #pragma omp parallel for num_threads(8) schedule(dynamic)
+    #pragma omp parallel for num_threads(6) schedule(dynamic, 1)
     for (std::size_t row = 0; row < imageSize.first; ++row)
     {
         for (std::size_t col = 0; col < imageSize.second; ++col)
