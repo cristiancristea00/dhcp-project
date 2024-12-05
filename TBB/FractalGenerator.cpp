@@ -6,7 +6,7 @@
 
 
 FractalGenerator::FractalGenerator(Size const & imageSize, Point const & topLeft, Point const & bottomRight, std::size_t const maxIterations) : imageSize{imageSize}, topLeft{topLeft},
-    bottomRight{bottomRight}, maxIterations{maxIterations}
+    bottomRight{bottomRight}, maxIterations{maxIterations}, logMaxIterations{static_cast<float>(std::log(maxIterations))}
 {
     image.resize(imageSize.first * imageSize.second);
 }
