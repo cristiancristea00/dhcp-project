@@ -5,15 +5,13 @@ CosineGenerator::CosineGenerator(Size const & imageSize, std::size_t const maxIt
 
 auto CosineGenerator::generate(Point const & startPoint) const -> std::uint8_t
 {
-    static const auto LOG_MAX_ITERATIONS{std::log(maxIterations)};
-
     Point point{0.0, 0.0};
 
     for (std::size_t iteration = 0; iteration < maxIterations; ++iteration)
     {
         if (std::abs(point) > RADIUS)
         {
-            return static_cast<std::uint8_t>(MAX_COLOR * std::log(iteration + 1) / LOG_MAX_ITERATIONS);
+            return static_cast<std::uint8_t>(MAX_COLOR * std::log(iteration + 1) / logMaxIterations);
         }
 
         point = cosine(point) + startPoint;

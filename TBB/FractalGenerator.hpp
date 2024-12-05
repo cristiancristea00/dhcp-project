@@ -33,6 +33,7 @@ protected:
     Point const bottomRight;
 
     std::size_t const maxIterations;
+    float const logMaxIterations;
 
     std::vector<std::uint8_t, oneapi::tbb::cache_aligned_allocator<std::uint8_t>> image;
 
