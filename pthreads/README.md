@@ -4,7 +4,7 @@ Simple examples of pthreads implementations can be found in the **pthreads_labs_
 
 ## Analysis
 The results can be found in the [**fractal_performance_measurement**](fractal_performance_measurement.xlsx) file.
-### Results for Julia fractal:
+### Results for Julia fractal for 1000x1000 images with 1000 iterations:
 ![Results for Julia fractal](img/julia_exec_time.png)
 
 ## Fractal example
