@@ -5,21 +5,15 @@ set(CMAKE_CXX_STANDARD 20)
 
 set(CMAKE_COLOR_DIAGNOSTICS ON)
 
-if(MSCV_IDE OR MSVC)
-    set(CMAKE_CXX_FLAGS_RELEASE "/Ot /arch:AVX2 /fp:fast /EHsc /Zi")
-    set(CMAKE_CXX_FLAGS_DEBUG "/Od /arch:AVX2 /fp:fast /EHsc /Zi /fsanitize=address")
-else()
-    set(CMAKE_CXX_FLAGS_RELEASE "-Ofast -march=native -pipe -fno-builtin -g")
-    set(CMAKE_CXX_FLAGS_DEBUG "-Og -march=native -pipe -fno-builtin -g -fsanitize=address,leak,undefined")
-endif()
+set(CMAKE_CXX_FLAGS_RELEASE "-Ofast -march=native -pipe -fno-builtin -g -lpthread")
+set(CMAKE_CXX_FLAGS_DEBUG "-Og -march=native -pipe -fno-builtin -g -lpthread -fsanitize=address,leak,undefined")
 
+set(OpenCV_DIR "/mnt/c/Users/Mihaela/build")
 find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
-link_libraries(${OpenCV_LIBS})
+link_libraries(${OpenCV_LIBS} ${CMAKE_THREAD_LIBS_INIT})
 
-set(SOURCE_FILES Utils.cpp FractalGenerator.cpp)
+find_package(Threads REQUIRED)
 
-add_executable(Mandelbrot Mandelbrot.cpp MandelbrotGenerator.cpp ${SOURCE_FILES})
-add_executable(Julia Julia.cpp JuliaGenerator.cpp ${SOURCE_FILES})
-add_executable(Cosine Cosine.cpp CosineGenerator.cpp ${SOURCE_FILES})
-add_executable(Tricorn Tricorn.cpp TricornGenerator.cpp ${SOURCE_FILES})
+add_executable(julia_pthreads julia_pthreads.cpp)
+
