@@ -16,4 +16,5 @@ link_libraries(${OpenCV_LIBS} ${CMAKE_THREAD_LIBS_INIT})
 find_package(Threads REQUIRED)
 
 add_executable(julia_pthreads julia_pthreads.cpp)
-
+add_executable(mandelbrot_pthreads mandelbrot_pthreads.cpp)
+add_executable(tricorn_pthreads tricorn_pthreads.cpp)
