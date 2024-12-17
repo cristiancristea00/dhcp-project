@@ -87,17 +87,32 @@ Total blocks needed along the image height: 375
 Execution time using cudaEvent:   23.7452 ms
 
 Execution time using std::chrono: for generateFractal                                    434.684 ms <==
+
 Execution time using std::chrono: for new                                               0.005023 ms
+
 Execution time using std::chrono: for cudaMalloc                                        0.342906 ms
+
 Execution time using std::chrono: for blockSize                                                0 ms
+
 Execution time using std::chrono: for gridSize                                          0.000284 ms
+
 Execution time using std::chrono: for generateMandelbrotKernel                           1.62335 ms
+
 Execution time using std::chrono: for cudaDeviceSynchronize                              22.2659 ms
+
 Execution time using std::chrono: for generateMandelbrotKernel + cudaDeviceSynchronize   23.8893 ms !!!
+
 Execution time using std::chrono: for cudaEventSynchronize                              0.149559 ms
+
 Execution time using std::chrono: for cudaMemcpy                                         4.04151 ms
+
 Execution time using std::chrono: for coloredImage                                       11.9221 ms
+
 Execution time using std::chrono: for imwrite                                            121.672 ms <--
+
 Execution time using std::chrono: for cudaFree                                          0.694151 ms
+
 Execution time using std::chrono: for delete                                             0.08132 ms
+
 Execution time using std::chrono: for delete - new (actual time in generateFractal)      164.684 ms
+
