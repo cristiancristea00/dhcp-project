@@ -11,6 +11,34 @@
 #define Y_MIN -1.2f   // Minimum imaginary part (bottom boundary of the complex plane)
 #define Y_MAX  1.2f   // Maximum imaginary part (top    boundary of the complex plane)
 
+auto start_chrono_generateFractal          = std::chrono::high_resolution_clock::now();
+auto start_chrono_new                      = std::chrono::high_resolution_clock::now();
+auto start_chrono_cudaMalloc               = std::chrono::high_resolution_clock::now();
+auto start_chrono_blockSize                = std::chrono::high_resolution_clock::now();
+auto start_chrono_gridSize                 = std::chrono::high_resolution_clock::now();
+auto start_chrono_generateMandelbrotKernel = std::chrono::high_resolution_clock::now();
+auto start_chrono_cudaDeviceSynchronize    = std::chrono::high_resolution_clock::now();
+auto start_chrono_cudaEventSynchronize     = std::chrono::high_resolution_clock::now();
+auto start_chrono_cudaMemcpy               = std::chrono::high_resolution_clock::now();
+auto start_chrono_coloredImage             = std::chrono::high_resolution_clock::now();
+auto start_chrono_imwrite                  = std::chrono::high_resolution_clock::now();
+auto start_chrono_cudaFree                 = std::chrono::high_resolution_clock::now();
+auto start_chrono_delete                   = std::chrono::high_resolution_clock::now();
+
+auto stop_chrono_generateFractal           = std::chrono::high_resolution_clock::now();
+auto stop_chrono_new                       = std::chrono::high_resolution_clock::now();
+auto stop_chrono_cudaMalloc                = std::chrono::high_resolution_clock::now();
+auto stop_chrono_blockSize                 = std::chrono::high_resolution_clock::now();
+auto stop_chrono_gridSize                  = std::chrono::high_resolution_clock::now();
+auto stop_chrono_generateMandelbrotKernel  = std::chrono::high_resolution_clock::now();
+auto stop_chrono_cudaDeviceSynchronize     = std::chrono::high_resolution_clock::now();
+auto stop_chrono_cudaEventSynchronize      = std::chrono::high_resolution_clock::now();
+auto stop_chrono_cudaMemcpy                = std::chrono::high_resolution_clock::now();
+auto stop_chrono_coloredImage              = std::chrono::high_resolution_clock::now();
+auto stop_chrono_imwrite                   = std::chrono::high_resolution_clock::now();
+auto stop_chrono_cudaFree                  = std::chrono::high_resolution_clock::now();
+auto stop_chrono_delete                    = std::chrono::high_resolution_clock::now();
+
 
 // Struct to hold image size (width and height)
 struct ImageSize
@@ -94,18 +122,26 @@ void generateFractal(ImageSize size, uint32_t max_iterations)
    cudaEventCreate(&stop);
    
    uint8_t *d_image;                                         // Pointer to image data in device memory (GPU)
-   uint8_t *h_image = new uint8_t[size.width * size.height]; // Pointer to image data in host   memory (CPU)
    
+   start_chrono_new = std::chrono::high_resolution_clock::now();
+   uint8_t *h_image = new uint8_t[size.width * size.height]; // Pointer to image data in host   memory (CPU)
+   stop_chrono_new = std::chrono::high_resolution_clock::now();
+   
+   start_chrono_cudaMalloc = std::chrono::high_resolution_clock::now();
    // Step 1: Allocate memory on the GPU
    // The GPU will store the image as a 1D array of uint8_t values. Each value represents a pixel's grayscale intensity
    // The size of the memory allocated is proportional to the image's dimensions: width * height * size of each pixel (1 byte)
    cudaMalloc((void**)&d_image, size.width * size.height * sizeof(uint8_t));
+   stop_chrono_cudaMalloc = std::chrono::high_resolution_clock::now();
    
+   start_chrono_blockSize = std::chrono::high_resolution_clock::now();
    // Step 2: Define the CUDA thread block size
    // A block contains a 2D grid of threads. Here, we use 8x8 threads per block, for a total of 64 pixels processed in parallel per block
    // This block size is chosen to balance GPU memory usage and computational efficiency, though it can be adjusted for optimization
    dim3 blockSize(8, 8); // A block processes an 8x8 section of the image
+   stop_chrono_blockSize = std::chrono::high_resolution_clock::now();
    
+   start_chrono_gridSize = std::chrono::high_resolution_clock::now();
    // Step 3: Calculate the grid size
    // The grid determines how many blocks are needed to cover the entire image
    // Each dimension of the grid is calculated by dividing the image dimensions by the block size, with rounding up to handle edge cases
@@ -114,6 +150,7 @@ void generateFractal(ImageSize size, uint32_t max_iterations)
       (size.width  + blockSize.x - 1) / blockSize.x, // Total blocks needed along the image width
       (size.height + blockSize.y - 1) / blockSize.y  // Total blocks needed along the image height
    );
+   stop_chrono_gridSize = std::chrono::high_resolution_clock::now();
    
    std::cout << "Total threads per block = 8×8 = 64 threads\n";
    std::cout << "Each thread is responsible for computing one pixel of the image, meaning each block processes a 64 pixel region in parallel.\n\n";
@@ -125,24 +162,31 @@ void generateFractal(ImageSize size, uint32_t max_iterations)
    // Record the start time for GPU execution using cudaEvent
    cudaEventRecord(start);
    
+   start_chrono_generateMandelbrotKernel = std::chrono::high_resolution_clock::now();
    // Step 4: Launch the CUDA kernel
    // The generateMandelbrotKernel function is executed in parallel across all threads in the grid
    // Each thread computes the Mandelbrot set for one pixel in the image
    generateMandelbrotKernel<<<gridSize, blockSize>>>(d_image, size, X_MIN, X_MAX, Y_MIN, Y_MAX, max_iterations);
+   stop_chrono_generateMandelbrotKernel = std::chrono::high_resolution_clock::now();
    
+   start_chrono_cudaDeviceSynchronize = std::chrono::high_resolution_clock::now();
    // Step 5: Synchronize the device
    // Ensures that all threads finish their computation before moving to the next step
    // Without this, the program may proceed prematurely, potentially causing incorrect or incomplete results
    cudaDeviceSynchronize();
+   stop_chrono_cudaDeviceSynchronize = std::chrono::high_resolution_clock::now();
    
    // Record the stop time for GPU execution using cudaEvent
    cudaEventRecord(stop);
+   
+   start_chrono_cudaEventSynchronize = std::chrono::high_resolution_clock::now();
    // Synchronize to ensure all GPU operations are complete before measuring time
    cudaEventSynchronize(stop);
+   stop_chrono_cudaEventSynchronize = std::chrono::high_resolution_clock::now();
    
    float elapsed_cuda = 0;
    cudaEventElapsedTime(&elapsed_cuda, start, stop);
-   std::cout << "Execution time using cudaEvent:   " << elapsed_cuda << " ms" << std::endl;
+   std::cout << "Execution time using cudaEvent:   " << elapsed_cuda << " ms\n\n";
    
    cudaEventDestroy(start);
    cudaEventDestroy(stop);
@@ -154,22 +198,33 @@ void generateFractal(ImageSize size, uint32_t max_iterations)
       std::cerr << "CUDA error: " << cudaGetErrorString(err) << std::endl;
    }
    
+   start_chrono_cudaMemcpy = std::chrono::high_resolution_clock::now();
    // Copy the resulting image from GPU memory back to CPU memory (host)
    cudaMemcpy(h_image, d_image, size.width * size.height * sizeof(uint8_t), cudaMemcpyDeviceToHost);
+   stop_chrono_cudaMemcpy = std::chrono::high_resolution_clock::now();
    
+   start_chrono_coloredImage = std::chrono::high_resolution_clock::now();
    // Create an OpenCV matrix (image) from the raw pixel data (grayscale image)
    cv::Mat img(size.height, size.width, CV_8UC1, h_image);
    
    // Apply a colormap (e.g., MAGMA) to enhance the visualization of the fractal
    cv::Mat coloredImage;
    cv::applyColorMap(img, coloredImage, cv::COLORMAP_MAGMA);
+   stop_chrono_coloredImage = std::chrono::high_resolution_clock::now();
    
+   start_chrono_imwrite = std::chrono::high_resolution_clock::now();
    // Save the generated fractal image as a PNG file
    cv::imwrite("Mandelbrot_CUDA.png", coloredImage);
+   stop_chrono_imwrite = std::chrono::high_resolution_clock::now();
    
+   start_chrono_cudaFree = std::chrono::high_resolution_clock::now();
    // Free the allocated memory on both GPU and CPU
    cudaFree(d_image);
+   stop_chrono_cudaFree = std::chrono::high_resolution_clock::now();
+   
+   start_chrono_delete = std::chrono::high_resolution_clock::now();
    delete[] h_image;
+   stop_chrono_delete = std::chrono::high_resolution_clock::now();
 }
 
 
@@ -192,8 +247,6 @@ void generateFractal(ImageSize size, uint32_t max_iterations)
 
 int main(int argc, char *argv[])
 {
-   auto start_chrono = std::chrono::high_resolution_clock::now();
-   
    // Check if the correct number of arguments is passed to the program
    if(argc != 4)
    {
@@ -209,13 +262,42 @@ int main(int argc, char *argv[])
    // Store image size in a structure
    ImageSize size = {width, height};
    
+   start_chrono_generateFractal = std::chrono::high_resolution_clock::now();
    // Call the function to generate the Mandelbrot fractal on the GPU and save the result as an image
    generateFractal(size, max_iterations);
+   stop_chrono_generateFractal = std::chrono::high_resolution_clock::now();
    
-   auto stop_chrono = std::chrono::high_resolution_clock::now();
+   std::chrono::duration<double, std::milli> elapsed_chrono_generateFractal              = stop_chrono_generateFractal          - start_chrono_generateFractal;
+   std::chrono::duration<double, std::milli> elapsed_chrono_new                          = stop_chrono_new                      - start_chrono_new;
+   std::chrono::duration<double, std::milli> elapsed_chrono_cudaMalloc                   = stop_chrono_cudaMalloc               - start_chrono_cudaMalloc;
+   std::chrono::duration<double, std::milli> elapsed_chrono_blockSize                    = stop_chrono_blockSize                - start_chrono_blockSize;
+   std::chrono::duration<double, std::milli> elapsed_chrono_gridSize                     = stop_chrono_gridSize                 - start_chrono_gridSize;
+   std::chrono::duration<double, std::milli> elapsed_chrono_generateMandelbrotKernel     = stop_chrono_generateMandelbrotKernel - start_chrono_generateMandelbrotKernel;
+   std::chrono::duration<double, std::milli> elapsed_chrono_cudaDeviceSynchronize        = stop_chrono_cudaDeviceSynchronize    - start_chrono_cudaDeviceSynchronize;
+   std::chrono::duration<double, std::milli> elapsed_chrono_generateMandelbrotKernelSync = stop_chrono_cudaDeviceSynchronize    - start_chrono_generateMandelbrotKernel;
+   std::chrono::duration<double, std::milli> elapsed_chrono_cudaEventSynchronize         = stop_chrono_cudaEventSynchronize     - start_chrono_cudaEventSynchronize;
+   std::chrono::duration<double, std::milli> elapsed_chrono_cudaMemcpy                   = stop_chrono_cudaMemcpy               - start_chrono_cudaMemcpy;
+   std::chrono::duration<double, std::milli> elapsed_chrono_coloredImage                 = stop_chrono_coloredImage             - start_chrono_coloredImage;
+   std::chrono::duration<double, std::milli> elapsed_chrono_imwrite                      = stop_chrono_imwrite                  - start_chrono_imwrite;
+   std::chrono::duration<double, std::milli> elapsed_chrono_cudaFree                     = stop_chrono_cudaFree                 - start_chrono_cudaFree;
+   std::chrono::duration<double, std::milli> elapsed_chrono_delete                       = stop_chrono_delete                   - start_chrono_delete;
+   std::chrono::duration<double, std::milli> elapsed_chrono_delete_new                   = stop_chrono_delete                   - start_chrono_new;
    
-   std::chrono::duration<double, std::milli> elapsed_chrono = stop_chrono - start_chrono;
-   std::cout << "Execution time using std::chrono: " << elapsed_chrono.count() << " ms" << std::endl;
+   std::cout << "Execution time using std::chrono: for generateFractal                                 " << std::setw(10) << elapsed_chrono_generateFractal.count()              << " ms <==" << std::endl;
+   std::cout << "Execution time using std::chrono: for new                                             " << std::setw(10) << elapsed_chrono_new.count()                          << " ms"     << std::endl;
+   std::cout << "Execution time using std::chrono: for cudaMalloc                                      " << std::setw(10) << elapsed_chrono_cudaMalloc.count()                   << " ms"     << std::endl;
+   std::cout << "Execution time using std::chrono: for blockSize                                       " << std::setw(10) << elapsed_chrono_blockSize.count()                    << " ms"     << std::endl;
+   std::cout << "Execution time using std::chrono: for gridSize                                        " << std::setw(10) << elapsed_chrono_gridSize.count()                     << " ms"     << std::endl;
+   std::cout << "Execution time using std::chrono: for generateMandelbrotKernel                        " << std::setw(10) << elapsed_chrono_generateMandelbrotKernel.count()     << " ms"     << std::endl;
+   std::cout << "Execution time using std::chrono: for cudaDeviceSynchronize                           " << std::setw(10) << elapsed_chrono_cudaDeviceSynchronize.count()        << " ms"     << std::endl;
+   std::cout << "Execution time using std::chrono: for generateMandelbrotKernel + cudaDeviceSynchronize" << std::setw(10) << elapsed_chrono_generateMandelbrotKernelSync.count() << " ms !!! "<< std::endl;
+   std::cout << "Execution time using std::chrono: for cudaEventSynchronize                            " << std::setw(10) << elapsed_chrono_cudaEventSynchronize.count()         << " ms"     << std::endl;
+   std::cout << "Execution time using std::chrono: for cudaMemcpy                                      " << std::setw(10) << elapsed_chrono_cudaMemcpy.count()                   << " ms"     << std::endl;
+   std::cout << "Execution time using std::chrono: for coloredImage                                    " << std::setw(10) << elapsed_chrono_coloredImage.count()                 << " ms"     << std::endl;
+   std::cout << "Execution time using std::chrono: for imwrite                                         " << std::setw(10) << elapsed_chrono_imwrite.count()                      << " ms <--" << std::endl;
+   std::cout << "Execution time using std::chrono: for cudaFree                                        " << std::setw(10) << elapsed_chrono_cudaFree.count()                     << " ms"     << std::endl;
+   std::cout << "Execution time using std::chrono: for delete                                          " << std::setw(10) << elapsed_chrono_delete.count()                       << " ms"     << std::endl;
+   std::cout << "Execution time using std::chrono: for delete - new (actual time in generateFractal)   " << std::setw(10) << elapsed_chrono_delete_new.count()                   << " ms"     << std::endl;
    
    return EXIT_SUCCESS;
 }
