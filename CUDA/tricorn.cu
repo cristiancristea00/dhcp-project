@@ -5,7 +5,7 @@
 #define MAX_COLOR 255 // Maximum color intensity for grayscale (used for coloring the fractal)
 
 
-// Complex plane boundaries for Mandelbrot set
+// Complex plane boundaries for Tricorn set
 #define X_MIN -2.0f   // Minimum real      part (left   boundary of the complex plane)
 #define X_MAX  1.0f   // Maximum real      part (right  boundary of the complex plane)
 #define Y_MIN -1.2f   // Minimum imaginary part (bottom boundary of the complex plane)
@@ -20,8 +20,8 @@ struct ImageSize
 };
 
 
-// CUDA device function: calculates the Mandelbrot value for a given pixel
-__device__ uint8_t mandelbrot(uint32_t x, uint32_t y, ImageSize size, float x_min, float x_max, float y_min, float y_max, uint32_t max_iterations)
+// CUDA device function: calculates the Tricorn value for a given pixel
+__device__ uint8_t tricorn(uint32_t x, uint32_t y, ImageSize size, float x_min, float x_max, float y_min, float y_max, uint32_t max_iterations)
 {
    // Map pixel coordinates (x, y) to complex plane coordinates (real and imaginary parts)
    // The resolution of the image is mapped to the range defined by X_MIN, X_MAX, Y_MIN, Y_MAX
@@ -32,14 +32,16 @@ __device__ uint8_t mandelbrot(uint32_t x, uint32_t y, ImageSize size, float x_mi
    float zr = 0.0f, zi = 0.0f;
    uint32_t iterations = 0; // Counter for the number of iterations before escaping
    
-   // Iterative process for Mandelbrot set: z = z^2 + c
+   // Iterative process for Tricorn set: z = conj(z)^2 + c
    // If the magnitude of z exceeds 2 (i.e., zr^2 + zi^2 > 4), the point escapes to infinity
-   // and is considered outside the Mandelbrot set
+   // and is considered outside the Tricorn set
+   // Note: conj(z) represents the complex conjugate of z
    
    while(iterations < max_iterations)
    {
+      // Compute the next value of z: z = conjugate(z^2) + c
       float zr2 = zr * zr - zi * zi + real; // Real      part of the new z
-      float zi2 = 2.0f * zr * zi + imag;    // Imaginary part of the new z
+      float zi2 = -2.0f * zr * zi + imag;   // Imaginary part of the new z (Note: negative sign)
       
       zr = zr2; // Update the real      part of z
       zi = zi2; // Update the imaginary part of z
@@ -47,17 +49,17 @@ __device__ uint8_t mandelbrot(uint32_t x, uint32_t y, ImageSize size, float x_mi
       // Escape condition: if the magnitude of z exceeds 2, the point escapes to infinity
       if(zr * zr + zi * zi > 4.0f)
       {
-         break; // Exit the loop if the point escapes (it’s not part of the Mandelbrot set)
+         break; // Exit the loop if the point escapes (it’s not part of the Tricorn set)
       }
       ++iterations; // Increment the iteration counter
    }
    
    // Color mapping:
-   // If the point didn't escape (iterations == max_iterations), it’s part of the Mandelbrot set and is colored black (0)
+   // If the point didn't escape (iterations == max_iterations), it’s part of the Tricorn set and is colored black (0)
    // If the point escaped, the color depends on how quickly it escaped (this is determined by the iteration count)
    if(iterations == max_iterations)
    {
-      return 0; // Points inside the Mandelbrot set are black (color 0)
+      return 0; // Points inside the Tricorn set are black (color 0)
    }
    
    // Use a logarithmic scale for coloring based on the escape time (iteration count)
@@ -66,8 +68,8 @@ __device__ uint8_t mandelbrot(uint32_t x, uint32_t y, ImageSize size, float x_mi
 }
 
 
-// CUDA kernel: This function runs on the GPU and calculates Mandelbrot fractal for each pixel
-__global__ void generateMandelbrotKernel(uint8_t *image, ImageSize size, float x_min, float x_max, float y_min, float y_max, uint32_t max_iterations)
+// CUDA kernel: This function runs on the GPU and calculates Tricorn fractal for each pixel
+__global__ void generateTricornKernel(uint8_t *image, ImageSize size, float x_min, float x_max, float y_min, float y_max, uint32_t max_iterations)
 {
    // Calculate the pixel coordinates (x, y) for this thread in the image
    uint32_t x = blockIdx.x * blockDim.x + threadIdx.x; // x-coordinate of the pixel (thread index in x)
@@ -76,8 +78,8 @@ __global__ void generateMandelbrotKernel(uint8_t *image, ImageSize size, float x
    // Check if the current thread is within the image bounds (to avoid out-of-bounds memory access)
    if(x < size.width && y < size.height)
    {
-      // Call the Mandelbrot device function to calculate the color for the pixel at (x, y)
-      uint8_t color = mandelbrot(x, y, size, x_min, x_max, y_min, y_max, max_iterations);
+      // Call the Tricorn device function to calculate the color for the pixel at (x, y)
+      uint8_t color = tricorn(x, y, size, x_min, x_max, y_min, y_max, max_iterations);
       
       // Store the calculated color in the image buffer (image[y * width + x] represents the pixel location)
       image[y * size.width + x] = color;
@@ -85,7 +87,7 @@ __global__ void generateMandelbrotKernel(uint8_t *image, ImageSize size, float x
 }
 
 
-// Function to generate the Mandelbrot fractal on the GPU and save the result as an image
+// Function to generate the Tricorn fractal on the GPU and save the result as an image
 void generateFractal(ImageSize size, uint32_t max_iterations)
 {
    // Declare and create CUDA events to measure GPU execution time
@@ -126,9 +128,9 @@ void generateFractal(ImageSize size, uint32_t max_iterations)
    cudaEventRecord(start);
    
    // Step 4: Launch the CUDA kernel
-   // The generateMandelbrotKernel function is executed in parallel across all threads in the grid
-   // Each thread computes the Mandelbrot set for one pixel in the image
-   generateMandelbrotKernel<<<gridSize, blockSize>>>(d_image, size, X_MIN, X_MAX, Y_MIN, Y_MAX, max_iterations);
+   // The generateTricornKernel function is executed in parallel across all threads in the grid
+   // Each thread computes the Tricorn set for one pixel in the image
+   generateTricornKernel<<<gridSize, blockSize>>>(d_image, size, X_MIN, X_MAX, Y_MIN, Y_MAX, max_iterations);
    
    // Step 5: Synchronize the device
    // Ensures that all threads finish their computation before moving to the next step
@@ -165,7 +167,7 @@ void generateFractal(ImageSize size, uint32_t max_iterations)
    cv::applyColorMap(img, coloredImage, cv::COLORMAP_MAGMA);
    
    // Save the generated fractal image as a PNG file
-   cv::imwrite("img_fractals/CUDA_mandelbrot.png", coloredImage);
+   cv::imwrite("img_fractals/CUDA_tricorn.png", coloredImage);
    
    // Free the allocated memory on both GPU and CPU
    cudaFree(d_image);
@@ -204,12 +206,12 @@ int main(int argc, char *argv[])
    // Parse command-line arguments for image width, height, and maximum iterations
    int width  = std::stoi(argv[1]); // Image width  in pixels
    int height = std::stoi(argv[2]); // Image height in pixels
-   uint32_t max_iterations = std::stoi(argv[3]); // Maximum iterations for Mandelbrot calculation
+   uint32_t max_iterations = std::stoi(argv[3]); // Maximum iterations for Tricorn calculation
    
    // Store image size in a structure
    ImageSize size = {width, height};
    
-   // Call the function to generate the Mandelbrot fractal on the GPU and save the result as an image
+   // Call the function to generate the Tricorn fractal on the GPU and save the result as an image
    generateFractal(size, max_iterations);
    
    auto stop_chrono = std::chrono::high_resolution_clock::now();
