@@ -51,7 +51,7 @@ nvcc -o julia julia.cu `pkg-config --cflags --libs opencv4` -lcudart
 
 ![Julia](img_fractals/CUDA_julia.png)
 
-![BlockSize Julia](results/BlockSize_Mandelbrot.png)
+![BlockSize Julia](results/BlockSize_Julia.png)
 
 ![SpeedUp Julia](results/SpeedUp_Julia.png)
 
