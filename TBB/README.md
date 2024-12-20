@@ -1,8 +1,8 @@
 # Fractal Image Generation using TBB
 
-## Initial Code Profiling
+## Initial Serial Code Profiling
 
-Running times (in milliseconds) on 5000×3000 images for 1000 iterations:
+Running times on 5000×3000 images for 1000 iterations:
 
 - _Mandelbrot:_ 12 753 ms
 - _Julia:_ 3 961 ms
@@ -77,7 +77,7 @@ Running times (in milliseconds) on 5000×3000 images for 1000 iterations:
 - I have looked over the `TBB` [documentation](https://www.intel.com/content/www/us/en/docs/onetbb/developer-guide-api-reference/2022-0/overview.html) and some [examples and tutorials](https://oneapi-src.github.io/oneTBB/index.html).
 - I have implemented a [QuisckSort](../TBB-QuickSort) algorithm using `TBB` and compared it with the Standard Template Library (STL) implementation.
 
-## Analysis
+## Performance Analysis
 
 ### Mandelbrot
 
@@ -150,6 +150,8 @@ Running times (in milliseconds) on 5000×3000 images for 1000 iterations:
 ![Cosine Speedup](img/graph/Cosine-Speedup-Block.png)
 
 ![Cosine Efficiency](img/graph/Cosine-Efficiency-Block.png)
+
+## Grainsize Analysis
 
 ### Mandelbrot
 
@@ -254,3 +256,105 @@ Running times (in milliseconds) on 5000×3000 images for 1000 iterations:
 </details>
 
 ![Cosine Grainsize](img/graph/Cosine-Heatmap-Grainsize.png)
+
+## Small Optimisations Analysis
+
+- Analysed the cache misses using the `callgrind` and `cachegrind` tools from the `Valgrind` suite.
+- Tried to use the [`[[likely]]`](https://en.cppreference.com/w/cpp/language/attributes/likely) and [`[[unlikely]]`](https://en.cppreference.com/w/cpp/language/attributes/likely) attributes to hint the compiler about the likelyhood of a branch. This did not have any effect on the performance.
+
+![Valgrind Analysis](img/profile/valgrind.png)
+
+## Compiler Comparison Analysis
+
+Running times (in milliseconds) on 3000×2000 images for 1000 iterations and 50x50 grainsize:
+
+| Fractal      |  `GCC` | `Intel` | `Clang` |
+| :----------- | -----: | ------: | ------: |
+| _Mandelbrot_ |    369 |   2 345 |   1 017 |
+| _Julia_      |    108 |     695 |     333 |
+| _Tricorn_    |    113 |     704 |     322 |
+| _Cosine_     | 15 464 |  12 956 |  18 555 |
+
+- I have compared the performance of the `GCC`, `Clang`, and `Intel` compilers.
+- The `GCC` compiler seems to have the best performance, followed by the `Clang` compiler, and the `Intel` compiler. These results are applicable to the `Mandelbrot`, `Julia`, and `Tricorn` fractals.
+- The reason for the `GCC` compiler having the best performance is that it has the most aggressive optimisations, especially for the floating-point operations.
+- The `Intel` compiler has the best performance for the `Cosine` fractal due to the exploitation of the hardware-specific features of the CPU.
+
+## Final Profiling
+
+Running times on 20000×16000 images for 2000 iterations and 50x50 grainsize:
+
+- _Mandelbrot:_ 2 283 ms
+- _Julia:_ 398 ms
+- _Tricorn:_ 718 ms
+- _Cosine:_ 85 997 ms
+
+---
+
+### Mandelbrot
+
+#### CPU Utilisation
+
+![Mandelbrot CPU Utilisation](img/profile/profile-tbb-final-mandelbrot-cpu.png)
+
+#### Top Hotspots
+
+![Mandelbrot Top Hotspots](img/profile/profile-tbb-final-mandelbrot-top.png)
+
+### System Utilisation
+
+![System Utilisation](img/profile/profile-tbb-final-mandelbrot-work.png)
+
+---
+
+### Julia
+
+#### CPU Utilisation
+
+![Julia CPU Utilisation](img/profile/profile-tbb-final-julia-cpu.png)
+
+#### Top Hotspots
+
+![Julia Top Hotspots](img/profile/profile-tbb-final-julia-top.png)
+
+### System Utilisation
+
+![System Utilisation](img/profile/profile-tbb-final-julia-work.png)
+
+---
+
+### Tricorn
+
+#### CPU Utilisation
+
+![Tricorn CPU Utilisation](img/profile/profile-tbb-final-tricorn-cpu.png)
+
+#### Top Hotspots
+
+![Tricorn Top Hotspots](img/profile/profile-tbb-final-tricorn-top.png)
+
+### System Utilisation
+
+![System Utilisation](img/profile/profile-tbb-final-tricorn-work.png)
+
+---
+
+### Cosine
+
+#### CPU Utilisation
+
+![Cosine CPU Utilisation](img/profile/profile-tbb-final-cosine-cpu.png)
+
+#### Top Hotspots
+
+![Cosine Top Hotspots](img/profile/profile-tbb-final-cosine-top.png)
+
+### System Utilisation
+
+![System Utilisation](img/profile/profile-tbb-final-cosine-work.png)
+
+
+## Future Work
+
+- Implement a simple algorithm that selects the grainsize based on the image size.
+- Optimise the `Cosine` fractal further by implementing a more efficient complex cosine function.

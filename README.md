@@ -17,10 +17,18 @@
 
 ## Dependencies
 
-We use [OpenCV](https://github.com/opencv/opencv) for writing the images to disk. To install it on Ubuntu, run:
+We use [OpenCV](https://github.com/opencv/opencv) for writing the images to disk. 
+
+To install it on _Ubuntu_, run:
 
 ```bash
 sudo apt-get install libopencv-dev
+```
+
+To install it on _Fedora_, run:
+
+```bash
+sudo dnf install opencv opencv-devel
 ```
 
 ## Building
