@@ -353,7 +353,6 @@ Running times on 20000×16000 images for 2000 iterations and 50x50 grainsize:
 
 ![System Utilisation](img/profile/profile-tbb-final-cosine-work.png)
 
-
 ## Future Work
 
 - Implement a simple algorithm that selects the grainsize based on the image size.
