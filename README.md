@@ -31,28 +31,6 @@ To install it on _Fedora_, run:
 sudo dnf install opencv opencv-devel
 ```
 
-## Building
-
-1. Clone the repository:
-
-    ```bash
-    git clone git@gitlab.cs.pub.ro:pp-2024/fractal-image-generation.git
-    ```
-
-    You will not be able to use the HTTPS protocol for cloning the repository, as logging into UNSTPB CS GitLab is provided by the SSO service. To use the SSH protocol, you need to [add an SSH key to your GitLab account](https://docs.gitlab.com/ee/user/ssh.html).
-
-2. Change the working directory to the repository root:
-
-    ```bash
-    cd fractal-image-generation
-    ```
-
-3. Run the script to build and run one or all implementations:
-
-    ```bash
-    bash run.sh
-    ```
-
 ## Theory
 
 Fractals are complex structures that exhibit self-similarity across varying scales and are frequently studied in mathematics, computer science, and natural sciences for their intricate beauty and unique properties. Defined as geometric shapes that can be split into parts, each of which is a reduced-scale copy of the whole, fractals can be observed in both natural forms, such as snowflakes, mountain ranges, and coastlines, as well as in artificially generated visuals. Fractal geometry, pioneered by Benoît B. Mandelbrot in the late 20th century, diverges from classical Euclidean geometry by describing irregular, fragmented shapes and surfaces with potentially infinite detail. Fractals have become essential for studying chaotic systems, modeling complex natural phenomena, and for computational generation in various applications, including graphics, image compression, and complex simulations.
