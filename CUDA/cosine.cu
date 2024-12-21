@@ -8,9 +8,10 @@
 
 // Complex plane boundaries for Cosine set
 #define X_MIN -2.0f   // Minimum real      part (left   boundary of the complex plane)
-#define X_MAX  2.0f   // Maximum real      part (right  boundary of the complex plane)
+#define X_MAX  5.0f   // Maximum real      part (right  boundary of the complex plane)
 #define Y_MIN -2.0f   // Minimum imaginary part (bottom boundary of the complex plane)
 #define Y_MAX  2.0f   // Maximum imaginary part (top    boundary of the complex plane)
+#define RADIUS 31.4f  // float radius = 10.0f * M_PI;
 
 
 // Struct to hold image size (width and height)
@@ -22,7 +23,7 @@ struct ImageSize
 
 
 // CUDA device function: calculates the Cosine value for a given pixel
-__device__ uint8_t cosine(uint32_t x, uint32_t y, ImageSize size, float x_min, float x_max, float y_min, float y_max, uint32_t max_iterations)
+__device__ uint8_t cosine(uint32_t x, uint32_t y, ImageSize size, float x_min, float x_max, float y_min, float y_max, float radius, uint32_t max_iterations)
 {
    // Map pixel coordinates (x, y) to complex plane coordinates (real and imaginary parts)
    // The resolution of the image is mapped to the range defined by X_MIN, X_MAX, Y_MIN, Y_MAX
@@ -41,8 +42,8 @@ __device__ uint8_t cosine(uint32_t x, uint32_t y, ImageSize size, float x_min, f
       zr = zr2; // Update the real      part of z
       zi = zi2; // Update the imaginary part of z
       
-      // Escape condition: if the magnitude of z exceeds 4, the point escapes to infinity
-      if(zr * zr + zi * zi > 16.0f)
+      // Escape condition: if the magnitude of z exceeds radius
+      if(zr * zr + zi * zi > radius * radius)
       {
          break; // Exit the loop if the point escapes (it’s not part of the Cosine set)
       }
@@ -64,7 +65,7 @@ __device__ uint8_t cosine(uint32_t x, uint32_t y, ImageSize size, float x_min, f
 
 
 // CUDA kernel: This function runs on the GPU and calculates Cosine fractal for each pixel
-__global__ void generateCosineKernel(uint8_t *image, ImageSize size, float x_min, float x_max, float y_min, float y_max, uint32_t max_iterations)
+__global__ void generateCosineKernel(uint8_t *image, ImageSize size, float x_min, float x_max, float y_min, float y_max, float radius, uint32_t max_iterations)
 {
    // Calculate the pixel coordinates (x, y) for this thread in the image
    uint32_t x = blockIdx.x * blockDim.x + threadIdx.x; // x-coordinate of the pixel (thread index in x)
@@ -74,7 +75,7 @@ __global__ void generateCosineKernel(uint8_t *image, ImageSize size, float x_min
    if(x < size.width && y < size.height)
    {
       // Call the Cosine device function to calculate the color for the pixel at (x, y)
-      uint8_t color = cosine(x, y, size, x_min, x_max, y_min, y_max, max_iterations);
+      uint8_t color = cosine(x, y, size, x_min, x_max, y_min, y_max, radius, max_iterations);
       
       // Store the calculated color in the image buffer (image[y * width + x] represents the pixel location)
       image[y * size.width + x] = color;
@@ -125,7 +126,7 @@ void generateFractal(ImageSize size, uint32_t max_iterations)
    // Step 4: Launch the CUDA kernel
    // The generateCosineKernel function is executed in parallel across all threads in the grid
    // Each thread computes the Cosine set for one pixel in the image
-   generateCosineKernel<<<gridSize, blockSize>>>(d_image, size, X_MIN, X_MAX, Y_MIN, Y_MAX, max_iterations);
+   generateCosineKernel<<<gridSize, blockSize>>>(d_image, size, X_MIN, X_MAX, Y_MIN, Y_MAX, RADIUS, max_iterations);
    
    // Step 5: Synchronize the device
    // Ensures that all threads finish their computation before moving to the next step
